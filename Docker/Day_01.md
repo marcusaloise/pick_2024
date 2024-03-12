@@ -116,3 +116,10 @@ Docker usa um esquema de camadas, ou layers, e para montar essas camadas são us
 ### Docker e sua realçao com o kernel
 
 O Docker utiliza algumas features básicas do kernel Linux para seu funcionamento.
+
+### Instalação do Docker
+
+```
+root@root:~$ curl -fsSL https://get.docker.com/ | sh
+```
+
