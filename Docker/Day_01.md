@@ -120,6 +120,53 @@ O Docker utiliza algumas features básicas do kernel Linux para seu funcionament
 ### Instalação do Docker
 
 ```
-root@root:~$ curl -fsSL https://get.docker.com/ | sh
+# To install the latest stable versions of Docker CLI, Docker Engine, and their
+# dependencies:
+#
+# 1. download the script
+#
+#   $ curl -fsSL https://get.docker.com -o install-docker.sh
+#
+# 2. verify the script's content
+#
+#   $ cat install-docker.sh
+#
+# 3. run the script with --dry-run to verify the steps it executes
+#
+#   $ sh install-docker.sh --dry-run
+#
+# 4. run the script either as root, or using sudo to perform the installation.
+#
+#   $ sudo sh install-docker.sh
+#
+# Command-line options
 ```
+
+### Como deixar um container em execução
+
+`crtl + p + q`
+
+para entrar em um container em execução escreva assim no terminal
+
+``` bash
+root@root:~$ docker container attach container_id
+```
+
+### como ver as metricas e logs?
+
+``` bash
+root@root:~$ docker container stats
+```
+
+``` bash
+root@root:~$ docker container logs --details container_id
+```
+
+
+
+
+
+
+
+
 
