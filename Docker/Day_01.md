@@ -1,7 +1,6 @@
 # Day 01 - O que é Container?
 
-### Container e uma forma de isolar recursos para um determinado motivo.
- 
+## Container e uma forma de isolar recursos para um determinado motivo.
  
 agrupamento de uma aplicação junto com suas dependências, que compartilham o kernel do sistema operacional do host, ou seja, da máquina (virtual ou física) onde está rodando.
 
@@ -12,7 +11,7 @@ Quando estamos utilizando máquinas virtuais, nós emulamos um novo sistema oper
 > [!IMPORTANT] 
 > na máquina virtual você emula um novo sistema operacional dentro do sistema operacional do host. Já no container você emula somente as aplicações e suas dependências tornando-o portátil.
 
-O que é vai ser isolado?
+### O que é vai ser isolado?
 
 Todos os recurso da maquina para que cada aplicação tenha o seu ambiente e que não interfira em outras aplicações.
 
@@ -32,9 +31,9 @@ Cgroups (Isolamento de Recursos)
     - CPU
     - Memory
 
-### Descomplicando namespace:
+## Descomplicando namespace:
 
-O que e um namespace?
+### O que e um namespace?
 
 Namespaces foram adicionados no kernel Linux na versão 2.6.24 e são eles que permitem o isolamento de processos quando estamos utilizando o Docker. São os responsáveis por fazer com que cada container possua seu próprio environment, ou seja, cada container terá a sua árvore de processos, pontos de montagens, etc., fazendo com que um container não interfira na execução de outro
 
@@ -96,14 +95,14 @@ para criar a nossa namespace com o fhs baixado do debian faça o seguinte:
 root@root:~$ unshare --mount --uts --ipc --net --map-root-user --user --pid --fork chroot /debian bash
 ```
 
-### O que é Cgroups?
+## O que é Cgroups?
 
 Cgroups é um recurso do kernel do Linux que limita, contabiliza e isola o uso de recursos de um processo. Como memoria e CPU.
 
 > cada vez que subimos um namespace ele sobe como um processo e podemos limitar recursos usando o Cgroups.
 
 
-### Copy-On-Write com ele funciona?
+## Copy-On-Write com ele funciona?
 
 Uma imagem de container e apenas read only
 como se você tivesse um livro e que fosse permitido fazer anotações nele caso quisesse, porém, cada vez que você estivesse prestes a tocar a página com a caneta, de repente alguém aparecesse, tirasse uma xerox dessa página e entregasse a cópia para você. É exatamente assim que o Copy-On-Write funciona.
@@ -113,7 +112,7 @@ Basicamente, significa que um novo recurso, seja ele um bloco no disco ou uma á
 Docker usa um esquema de camadas, ou layers, e para montar essas camadas são usadas técnicas de Copy-On-Write. Um container é basicamente uma pilha de camadas compostas por N camadas read-only e uma, a superior, read-write.
 
 
-### Docker e sua realçao com o kernel
+### Docker e sua relação com o kernel
 
 O Docker utiliza algumas features básicas do kernel Linux para seu funcionamento.
 
@@ -142,7 +141,7 @@ O Docker utiliza algumas features básicas do kernel Linux para seu funcionament
 # Command-line options
 ```
 
-### Como deixar um container em execução
+### Como posso deixar um container em execução
 
 `crtl + p + q`
 
@@ -181,14 +180,14 @@ root@root:~$ docker container run -d --name nginx nginx
 ```
 `Utilizamos o parametro -d para ele rodar em background (dettached)`
 
-E como eu posso entrar nesse container nginx? 
+### E como eu posso entrar nesse container nginx? 
 
 Vamos ter que rodar outro comando para entrar nele com o terminal.
 
 ``` bash
 root@root:~$ docker container exec -ti <container id> bash
 ```
-``perceba que não fizemos o attach no container e sim o exec, por conta que o container não estava executando o bash no momento que tentamos conectar nele e assim temos que utilizar o comando exec para executar o bash e conectar nele utilizando o -ti`
+`perceba que não fizemos o attach no container e sim o exec, por conta que o container não estava executando o bash no momento que tentamos conectar nele e assim temos que utilizar o comando exec para executar o bash e conectar nele utilizando o -ti`
 
 ``` bash
 root@root:~$ docker container run -d -p 8080:80 --name nginx nginx
