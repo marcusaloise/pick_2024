@@ -146,7 +146,7 @@ O Docker utiliza algumas features básicas do kernel Linux para seu funcionament
 
 `crtl + p + q`
 
-para entrar em um container em execução escreva assim no terminal
+para entrar em um container em execução execute o seguinte comando no terminal
 
 ``` bash
 root@root:~$ docker container attach container_id
@@ -157,16 +157,40 @@ root@root:~$ docker container attach container_id
 ``` bash
 root@root:~$ docker container stats
 ```
+Podemos ver o uso de recursos do container 
 
 ``` bash
 root@root:~$ docker container logs --details container_id
 ```
+Podemos ver os logs de comandos feitos dentro do container
 
 
+### Como posso inspecionar um container?
+
+``` bash
+root@root:~$ docker container inspect container-id
+```
+
+fornece informações detalhadas sobre construções controladas pelo Docker.
 
 
+### criando um container Dettached e container exec
 
+``` bash
+root@root:~$ docker container run -d --name nginx nginx
+```
+`Utilizamos o parametro -d para ele rodar em background (dettached)`
 
+E como eu posso entrar nesse container nginx? 
 
+Vamos ter que rodar outro comando para entrar nele com o terminal.
 
+``` bash
+root@root:~$ docker container exec -ti <container id> bash
+```
+``perceba que não fizemos o attach no container e sim o exec, por conta que o container não estava executando o bash no momento que tentamos conectar nele e assim temos que utilizar o comando exec para executar o bash e conectar nele utilizando o -ti`
 
+``` bash
+root@root:~$ docker container run -d -p 8080:80 --name nginx nginx
+```
+Perceba que agora vamos utilizar o parametro -p para bindar a porta do nosso container 80 no nosso host 8080
