@@ -87,3 +87,6 @@ HEALTHCHECK  --timeout=2s CMD curl -f localhost || exit 1
 - `ENTRYPOINT`: Define o comando padrão a ser executado quando o contêiner for iniciado.
 - `CMD`: Fornece argumentos padrão para o `ENTRYPOINT`.
 - `HEALTHCHECK`: Verifica o estado da aplicação dentro do contêiner.
+- `VOLUME`:Define um volume a ser montado no container.
+- `MAINTAINER`: Autor da imagem.
+- `USER`: Determina qual usuário será utilizado na imagem. Por default é o root
