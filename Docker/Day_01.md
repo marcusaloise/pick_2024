@@ -13,20 +13,25 @@ Quando estamos utilizando máquinas virtuais, nós emulamos um novo sistema oper
 
 ### O que é vai ser isolado?
 
+- **Isolamento de Recursos**:
+  - Filesystem
+  - Processos (PID)
+  - CPU, Memória e Usuário
+
 Todos os recurso da maquina para que cada aplicação tenha o seu ambiente e que não interfira em outras aplicações.
 
 Container == isolamento 
 
 Cgroups == isolamento de recursos
 
-Namespaces:
+**Namespaces:**
 
     - Filesystem
     - Processos PID
     - Network
     - Users
 
-Cgroups (Isolamento de Recursos)
+**Cgroups (Isolamento de Recursos)**
 
     - CPU
     - Memory
@@ -140,7 +145,20 @@ O Docker utiliza algumas features básicas do kernel Linux para seu funcionament
 #
 # Command-line options
 ```
+## Docker usage
 
+**Subindo imagem ubuntu:latest com nome teste:**
+   ```bash
+   docker container run --name teste -it ubuntu:latest
+   ```
+**Comandos básicos:**
+   ```bash
+   docker container ls -a
+   docker container stop
+   docker container start
+   docker container attach
+   docker container rm
+   ```
 ### Como posso deixar um container em execução
 
 `crtl + p + q`
