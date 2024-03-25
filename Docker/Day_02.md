@@ -130,6 +130,25 @@ EXPOSE 5000
 CMD redis-server --daemonize yes && flask run --host=0.0.0.0
 ```
 
+```Dockerfile
+# 09
+FROM python:3.9.19-alpine3.19
+
+WORKDIR /app
+
+COPY . .
+RUN python -m venv /app/venv
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 5000
+ENV REDIS_HOST=192.168.1.10
+
+CMD flask run --host=0.0.0.0
+
+
+# docker container run -d -p 6379:6379 -e REDIS_HOST=192.168.1.10 redis
+
+```
 
 ### Multistage Dockerfile
 
@@ -197,5 +216,7 @@ Pessoas e empresas se juntam, criam seus containers seguindo as melhores prátic
 **Verificação de Vulnerabilidades**: É importante garantir a segurança da imagem antes de disponibilizá-la para uso. Para isso, podemos utilizar ferramentas de verificação de vulnerabilidades, como o Trivy. Essas ferramentas analisam a imagem em busca de componentes com falhas de segurança conhecidas.
 
 **Assinatura com o Cosign**: Para adicionar uma camada extra de segurança, é possível assinar digitalmente a imagem utilizando o Cosign. Essa assinatura garante a integridade da imagem, permitindo que os usuários verifiquem a autenticidade e a procedência da mesma.
+
+
 
 
