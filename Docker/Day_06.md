@@ -43,3 +43,26 @@ services:
      ports:
         - "8080:80"
 ```
+```yml
+version: '3'
+
+services:
+  giropops-senhas:
+    image: marcusaloise/giropops-senhas:2.0
+    ports:
+      - "5000:5000"
+    networks: 
+      - giropops
+    environment:
+      REDIS_HOSTS: redis
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - giropops
+    
+networks:
+  giropops:
+    driver: bridge    
+```
