@@ -34,6 +34,7 @@ O coração do Docker Compose é o arquivo `docker-compose.yml`. Neste arquivo, 
 - `docker-compose logs`: Exibe os logs de todos os serviços.
 - `docker-compose scale`: Permite alterar o número de contêineres para um serviço.
 
+> Primeiro compose apenas com nginx
 ```yml
 version: '3'
 
@@ -43,26 +44,140 @@ services:
      ports:
         - "8080:80"
 ```
+
+> Subindo a aplicação com o compose
 ```yml
 version: '3'
-
 services:
-  giropops-senhas:
+  app:
     image: marcusaloise/giropops-senhas:2.0
     ports:
       - "5000:5000"
     networks: 
-      - giropops
+      - strigus
     environment:
-      REDIS_HOSTS: redis
+      REDIS_HOST: redis
   redis:
-    image: redis:latest
+    image: redis
     ports:
       - "6379:6379"
     networks:
-      - giropops
-    
+      - strigus
+      
 networks:
-  giropops:
-    driver: bridge    
+  strigus:
+    driver: bridge 
+
+```
+
+> Criando volumes
+```yml
+version: '3'
+services:
+  app:
+    image: marcusaloise/giropops-senhas:2.0
+    ports:
+      - "5000:5000"
+    networks: 
+      - strigus
+    environment:
+      REDIS_HOST: redis
+    volumes:
+      - girus:/girus
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - strigus
+    volumes:
+      - girus:/girus    
+networks:
+  strigus:
+    driver: bridge
+volumes:
+  girus:
+
+```
+> Buildando a imagem pelo docker compose
+```yml
+version: '3'
+services:
+  app:
+    build: ./Dockerfile-app
+    ports:
+      - "5000:5000"
+    networks: 
+      - strigus
+    environment:
+      REDIS_HOST: redis
+    volumes:
+      - girus:/girus
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - strigus
+    volumes:
+      - girus:/girus    
+networks:
+  strigus:
+    driver: bridge
+volumes:
+  girus:
+
+ ```
+
+> Utilizando deploy para limitar recursos
+```yml
+version: '3'
+services:
+  app:
+    build: ./Dockerfile-app
+    ports:
+      - "5000:5000"
+    networks: 
+      - strigus
+    environment:
+      REDIS_HOST: redis
+    volumes:
+      - girus:/girus
+    deploy: 
+      replicas: 1
+      resources:      
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+    depends_on:
+            - redis    
+  redis:
+    image: redis
+    networks:
+      - strigus
+    volumes:
+      - girus:/girus
+    deploy:
+      replicas: 3
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+ 
+networks:
+  strigus:
+    driver: bridge
+volumes:
+  girus:
+
+
 ```
