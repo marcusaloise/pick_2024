@@ -1,21 +1,52 @@
 version: '3'
-
 services:
   app:
-    image: marcusaloise/giropops-senhas:2.0
+    build: ./Dockerfile-app
     ports:
       - "5000:5000"
-    networks: 
+    networks:
       - strigus
     environment:
       REDIS_HOST: redis
+    volumes:
+      - girus:/girus
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    depends_on:
+      - redis
+
   redis:
     image: redis
-    ports:
-      - "6379:6379"
+    command: redis-server --appendonly yes
     networks:
       - strigus
-      
+    volumes:
+      - girus:/girus
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
 networks:
   strigus:
-    driver: bridge 
+    driver: bridge
+volumes:
+  girus:

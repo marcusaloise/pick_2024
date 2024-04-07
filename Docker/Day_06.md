@@ -45,7 +45,7 @@ services:
         - "8080:80"
 ```
 
-> Subindo a aplicação com o compose
+> Subindo a aplicação giropops senhas com o compose
 ```yml
 version: '3'
 services:
@@ -179,5 +179,152 @@ networks:
 volumes:
   girus:
 
+```
+> Adicionando healthcheck
 
+```yml
+version: '3'
+services:
+  app:
+    build: ./Dockerfile-app
+    ports:
+      - "5000:5000"
+    networks: 
+      - strigus
+    environment:
+      REDIS_HOST: redis
+    volumes:
+      - girus:/girus
+    deploy: 
+      replicas: 1
+      resources:      
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    depends_on: 
+      - redis  
+    
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    networks:
+      - strigus
+    volumes:
+      - girus:/girus
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck: 
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+ 
+networks:
+  strigus:
+    driver: bridge
+volumes:
+  girus:
+```
+
+> Criando um docker compose mais avançado
+
+```yml
+version: '3'
+services:
+  app:
+    build: ./Dockerfile-app
+    ports:
+      - "5000:5000"
+    networks: 
+      - strigus
+    environment:
+      REDIS_HOST: redis
+    env_file:
+      - .env      
+    volumes:
+      - type: volume
+        source: girus
+        target: /girus 
+    depends_on:
+      - redis
+    labels:
+      io.linuxtips.description: "Giropops senhas App"
+      io.linuxtips.version: "1.0"
+        
+    deploy: 
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s        
+      resources:      
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4   
+        
+    
+  redis:
+    image: redis
+    command: redis-server --appendonly yes
+    networks:
+      - strigus
+    volumes:
+      - girus:/girus
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    healthcheck: 
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      io.linuxtips.description: "Redis server"
+      io.linuxtips.version: "Latest"
+ 
+networks:
+  strigus:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.20.0.0/16"
+    labels:
+      io.linuxtips.network: "Strigus Network"      
+volumes:
+  girus:
+    driver: local    
+    driver_opts:
+      type: "none"  
+      device: /home/elliot/docker
+      o: "bind"
+    labels:
+      io.linuxtips.volume: "Girus volume"      
 ```
