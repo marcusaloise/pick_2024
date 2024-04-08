@@ -328,3 +328,54 @@ volumes:
     labels:
       io.linuxtips.volume: "Girus volume"      
 ```
+
+> Desafio da aula
+
+```yml
+version: '3.8'
+services:
+  giropops-senhas:
+    image: marcusaloise/giropops-senhas:2.0
+    container_name: app-giropops-senhas-1
+    ports: 
+      - "5000:5000"
+    networks:
+      - giropops
+    env_file:
+      - .env
+    volumes:
+      - type: volume
+        source: strigus 
+        target: /strigus
+    depends_on:
+      - redis
+    environment:
+      REDIS_HOST: redis
+    labels:
+      com.docker,description: "Giropops"
+    deploy:      
+      restart_policy:
+        condition: unless-stopped
+        delay: 60s
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 16M
+  redis:
+    image: redis
+    container_name: app-redis-1 
+    command: redis-server --appendonly yes
+    networks:
+      - giropops
+    volumes:
+      - strigus:/strigus 
+
+networks:
+  giropops:
+    driver: bridge
+
+volumes:
+  strigus:  
+    driver: local
+
+```
