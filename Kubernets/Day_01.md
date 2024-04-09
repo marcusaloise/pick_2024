@@ -77,7 +77,7 @@ Eis o que o Kubernetes faz:
 O Kubernetes foi projetado para ser executado em qualquer lugar, permitindo que você implante aplicações na nuvem, no local (on-premise), em um ambiente híbrido ou mesmo em múltiplos provedores de nuvem, o que o torna uma solução ideal em um mundo com várias plataformas de nuvem.
 
 
-## O que são workers e controll plane do kubernetes:
+## O que são workers e control plane do kubernetes:
 
 Dentro do Kubernetes, o cluster é composto por um conjunto de máquinas, chamadas de nós ou "nodes", que rodam as aplicações em containers. Estes nós são organizados em duas categorias principais: o Control Plane (ou plano de controle) e os Worker Nodes (nós de trabalho).
 
@@ -110,7 +110,6 @@ Juntos, o Control Plane e os Worker Nodes possibilitam a execução das aplicaç
 
 - **kubelet:** Agent que roda em cada node
 - **Kube Proxy:** Todo node tem um proxy, que faz a comunicação entre pods e todo o mundo.
-- ****
 
 ### Quais são as portas essenciais:
 
