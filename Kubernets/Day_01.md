@@ -1,6 +1,6 @@
 # Descomplicando o K8s
 
-### O que é um container: 
+## O que é um container: 
 
 Uma solução de virtualização leve usada para executar e isolar aplicações. Diferente das máquinas virtuais tradicionais, que virtualizam todo um sistema operacional para cada aplicação, os containers compartilham o mesmo núcleo do sistema operacional do host, mas podem ser isolados uns dos outros. Isso permite que sejam mais eficientes, leves e rápidos do que máquinas virtuais completas.
 
@@ -25,7 +25,7 @@ As principais funcionalidades do Docker Engine incluem:
 O Docker Engine pode operar em diferentes modos, sendo os mais comuns o modo standalone, para gerenciar containers em um único host, e o modo swarm, utilizado para orquestrar e gerenciar um cluster de Docker hosts, permitindo o escalonamento e gerenciamento de múltiplos containers de forma distribuída.
 
 
-### O que é um docker runtime:
+## O que é um docker runtime:
 
 O "Docker runtime" refere-se ao ambiente de execução usado pelo Docker para executar containers. Este ambiente é responsável por gerenciar o ciclo de vida dos containers, desde a sua criação e execução até a sua parada e remoção. O runtime do Docker cuida de tudo que é necessário para que um container funcione corretamente, incluindo a alocação de recursos (como CPU e memória), isolamento de processo, gerenciamento de rede e segurança.
 
@@ -37,7 +37,7 @@ Portanto, quando se fala sobre "Docker runtime", está se referindo ao conjunto 
 
 
 
-### O que é Open Container Initiative (OCI):
+## O que é Open Container Initiative (OCI):
 A Open Container Initiative (OCI) é um projeto sob a Linux Foundation que foi criado para desenvolver padrões abertos em torno de formatos de containers e runtimes. A iniciativa começou em 2015 após a Docker, Inc. doar sua especificação de container e runtimes, como Docker, para ajudar a criar um padrão na indústria.
 
 Os principais objetivos da OCI são:
@@ -54,7 +54,7 @@ A OCI é importante para o ecossistema de containers pois permite que organizaç
 
 Os padrões definidos pela OCI incluem a Especificação de Formato de Imagem de Container (OCI Image Format specification) e a Especificação de Runtime de Container (OCI Runtime specification), que estabelecem como os containers devem ser empacotados e executados de maneira consistente.
 
-### O que é o Kubernetes (k8s):
+## O que é o Kubernetes (k8s):
 
 O Kubernetes é um sistema de orquestração de containers de código aberto que automatiza a implantação, o escalonamento e a gestão de aplicações em containers. Desenvolvido originalmente pelo Google com base em sua experiência com o Borg, um sistema interno similar, o Kubernetes foi doado à Cloud Native Computing Foundation (CNCF) e se tornou uma das plataformas mais populares para gerenciamento de containers.
 
@@ -77,7 +77,7 @@ Eis o que o Kubernetes faz:
 O Kubernetes foi projetado para ser executado em qualquer lugar, permitindo que você implante aplicações na nuvem, no local (on-premise), em um ambiente híbrido ou mesmo em múltiplos provedores de nuvem, o que o torna uma solução ideal em um mundo com várias plataformas de nuvem.
 
 
-### O que são workers e controll plane do kubernetes:
+## O que são workers e controll plane do kubernetes:
 
 Dentro do Kubernetes, o cluster é composto por um conjunto de máquinas, chamadas de nós ou "nodes", que rodam as aplicações em containers. Estes nós são organizados em duas categorias principais: o Control Plane (ou plano de controle) e os Worker Nodes (nós de trabalho).
 
@@ -97,3 +97,67 @@ Os Worker Nodes são as máquinas onde as aplicações realmente rodam. Cada Wor
 - **Container Runtime:** O software responsável por rodar os containers. Exemplos incluem Docker, containerd e CRI-O.
 
 Juntos, o Control Plane e os Worker Nodes possibilitam a execução das aplicações em containers de forma distribuída e com alta disponibilidade.
+
+
+### Arquitetura do Control Plane:
+
+- **etcd:** grava o estado do cluster, se comunica diretamente com o `Kube ApiServer`.
+- **Kube ApiServer:** Pega o estado do cluster e toda comunicação e envia para o `etcd`.
+- **Kube Scheduler:** Quem gerencia a criação dos pods, container e afins.
+- **Kube controler Manager:** executa processos de controlador, quase a msm pegada do schedeler.
+
+### Arquitetura do worker:
+
+- **kubelet:** Agent que roda em cada node
+- **Kube Proxy:** Todo node tem um proxy, que faz a comunicação entre pods e todo o mundo.
+- ****
+
+### Quais são as portas essenciais:
+
+*Control Plane:*
+- **Kube-ApiServer ->** 6443 tcp
+- **etcd ->** 2379 - 2380 tcp
+- **Kubelet ->** 10250 tcp
+- **kube-scheduler ->** 10251 tcp
+- **kube-controler ->** 10252 tcp
+
+*Worker:*
+- **NodePort ->** 30000 - 32767 tcp
+- **weave net ->** 6783 - 6784 tcp/udp
+
+
+
+## Introdução pods, replica sets, deployment e services
+
+### Pods:
+
+`Pods` e a menor unidade de gerenciamento dentro do k8s, que contem um ou mais containers.
+
+### Replica sets:
+
+
+
+### Deployment:
+
+
+
+### Services:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
