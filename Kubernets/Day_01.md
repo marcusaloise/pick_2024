@@ -35,3 +35,65 @@ Além disso, o conceito de runtime do Docker se expandiu com a introdução da C
 
 Portanto, quando se fala sobre "Docker runtime", está se referindo ao conjunto de componentes e mecanismos que o Docker usa para executar containers de forma eficiente e segura em diferentes ambientes.
 
+
+
+### O que é Open Container Initiative (OCI):
+A Open Container Initiative (OCI) é um projeto sob a Linux Foundation que foi criado para desenvolver padrões abertos em torno de formatos de containers e runtimes. A iniciativa começou em 2015 após a Docker, Inc. doar sua especificação de container e runtimes, como Docker, para ajudar a criar um padrão na indústria.
+
+Os principais objetivos da OCI são:
+
+1. **Definir padrões:** Estabelecer padrões para o formato da imagem de um container e para o runtime do container, promovendo a portabilidade entre diferentes sistemas e plataformas.
+
+2. **Promover a colaboração:** Encorajar a colaboração entre líderes da indústria e desenvolvedores para evitar a fragmentação e garantir que os containers sejam padronizados e interoperáveis.
+
+3. **Garantir a governança aberta:** Garantir que o desenvolvimento dos padrões seja feito de maneira transparente e com a participação da comunidade.
+
+4. **Certificar produtos:** Oferecer um programa de certificação para produtos que atendem aos padrões da OCI, assegurando a conformidade e compatibilidade.
+
+A OCI é importante para o ecossistema de containers pois permite que organizações utilizem containers de diferentes fornecedores sem se preocupar com incompatibilidades e bloqueio por fornecedor (vendor lock-in). Isso ajuda na adoção de tecnologias de container e na construção de um ecossistema mais rico e diversificado.
+
+Os padrões definidos pela OCI incluem a Especificação de Formato de Imagem de Container (OCI Image Format specification) e a Especificação de Runtime de Container (OCI Runtime specification), que estabelecem como os containers devem ser empacotados e executados de maneira consistente.
+
+### O que é o Kubernetes (k8s):
+
+O Kubernetes é um sistema de orquestração de containers de código aberto que automatiza a implantação, o escalonamento e a gestão de aplicações em containers. Desenvolvido originalmente pelo Google com base em sua experiência com o Borg, um sistema interno similar, o Kubernetes foi doado à Cloud Native Computing Foundation (CNCF) e se tornou uma das plataformas mais populares para gerenciamento de containers.
+
+Eis o que o Kubernetes faz:
+
+1. **Orquestração de Containers:** Gerencia a vida útil de containers em diferentes ambientes de computação.
+
+2. **Automatização da Implantação:** Permite a implantação automática de aplicações em containers conforme definido em configurações declarativas.
+
+3. **Escalonamento:** Oferece a habilidade de escalar aplicações automaticamente com base no uso ou através de comandos manuais.
+
+4. **Balanceamento de Carga:** Distribui o tráfego de rede entre containers para manter a estabilidade e eficiência da aplicação.
+
+5. **Gerenciamento de Estado:** Lida com armazenamento persistente para containers, o que permite executar aplicações que necessitam de armazenamento duradouro.
+
+6. **Autocura:** Reinicia containers que falham, substitui e reschedule containers quando nós (nodes) morrem, mata containers que não respondem ao health check definido pelo usuário e não os anuncia aos clientes até que estejam prontos para servir.
+
+7. **Descoberta de Serviços e Balanceamento de Carga:** O Kubernetes pode expor um container usando o DNS ou usando seu próprio endereço IP. Se o tráfego para um container for alto, o Kubernetes pode balancear a carga e distribuir o tráfego de rede para que a implantação seja estável.
+
+O Kubernetes foi projetado para ser executado em qualquer lugar, permitindo que você implante aplicações na nuvem, no local (on-premise), em um ambiente híbrido ou mesmo em múltiplos provedores de nuvem, o que o torna uma solução ideal em um mundo com várias plataformas de nuvem.
+
+
+### O que são workers e controll plane do kubernetes:
+
+Dentro do Kubernetes, o cluster é composto por um conjunto de máquinas, chamadas de nós ou "nodes", que rodam as aplicações em containers. Estes nós são organizados em duas categorias principais: o Control Plane (ou plano de controle) e os Worker Nodes (nós de trabalho).
+
+### Control Plane (Plano de Controle)
+O Control Plane é responsável pela gestão global do cluster e pelo gerenciamento da orquestração dos containers. Ele toma decisões sobre o cluster (como, por exemplo, agendamento de pods) e reage a eventos no cluster (como, por exemplo, se um pod falha, ele é o responsável por iniciar outro pod). O Control Plane inclui várias partes:
+
+- **API Server (Servidor de API):** É o ponto de entrada para todas as REST commands usadas para controlar o cluster. Ele processa as requisições, valida-as e executa as regras de negócio do cluster.
+- **Scheduler (Agendador):** Decide qual nó receberá a execução de um pod, baseado em recursos disponíveis e outros fatores.
+- **Controller Manager:** Executa os processos de controle de fundo, como lidar com o ciclo de vida dos objetos do Kubernetes.
+- **etcd:** Banco de dados de configuração distribuído que armazena todos os dados do cluster para garantir a persistência e o estado do cluster.
+
+### Worker Nodes (Nós de Trabalho)
+Os Worker Nodes são as máquinas onde as aplicações realmente rodam. Cada Worker Node é gerenciado pelo Control Plane e contém os serviços necessários para rodar os Pods, que são as unidades de trabalho do Kubernetes.
+
+- **Kubelet:** Agente que roda em cada nó e se assegura de que os containers estão rodando em um Pod.
+- **Kube-Proxy:** Mantém as regras de rede nos nós. Isso permite a comunicação para dentro e fora de seu cluster.
+- **Container Runtime:** O software responsável por rodar os containers. Exemplos incluem Docker, containerd e CRI-O.
+
+Juntos, o Control Plane e os Worker Nodes possibilitam a execução das aplicações em containers de forma distribuída e com alta disponibilidade.
