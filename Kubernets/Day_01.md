@@ -128,19 +128,33 @@ Juntos, o Control Plane e os Worker Nodes possibilitam a execução das aplicaç
 
 ## Introdução pods, replica sets, deployment e services
 
-### Pods:
+Node > Pods > Container
+
+### Pods: 
 
 `Pods` e a menor unidade de gerenciamento dentro do k8s, que contem um ou mais containers.
 
+- Trabalha com isolamento
+    - Somente um IP por pod
+
+
 ### Replica sets:
 
+controler de quantidade de replicas de nodes/pods, e criado juntamente com o deployment.
 
 
 ### Deployment:
 
+Arquivo de configuração(deploy), realiza o deploy das aplicações com suas config e envs
 
-
+ 
 ### Services:
+
+Gerenciamento de regra de serviço entre pods/nodes/container
+
+
+
+
 
 
 
