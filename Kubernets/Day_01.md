@@ -152,14 +152,23 @@ Arquivo de configuração(deploy), realiza o deploy das aplicações com suas co
 
 Gerenciamento de regra de serviço entre pods/nodes/container
 
+## Kubectl
+
+Comando para interagir com o cluster
+
+```
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+
+```
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+```
 
 
+## kind: 
 
-
-
-
-
-
+A ferramenta kind (Kubernetes IN Docker) é uma ferramenta que permite rodar clusters Kubernetes dentro de contêineres Docker. É uma ferramenta poderosa e popular para desenvolvimento e teste de Kubernetes, pois permite a criação rápida e fácil de um ou mais clusters Kubernetes em uma máquina local, sem a necessidade de configuração complexa ou recursos de hardware dedicados.
 
 
 
