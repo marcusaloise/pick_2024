@@ -173,13 +173,67 @@ A ferramenta kind (Kubernetes IN Docker) é uma ferramenta que permite rodar clu
 
 
 
+```yml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
 
 
+```
+
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: giropops
+  name: giropops
+spec:
+  containers:
+  - image: nginx
+    name: giropops
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
 
 
+```
+
+____
 
 
+```yml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+- role: worker
+```
 
-
-
-
+```yml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-giropops
+    app: giropops-strigus
+  name: nginx-giropops
+spec:
+  containers:
+  - image: nginx
+    name: nginx-giropops
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+```
