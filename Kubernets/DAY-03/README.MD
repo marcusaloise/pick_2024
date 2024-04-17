@@ -6,7 +6,22 @@ O ***deployment*** e um recurso que gerencia o processo de implantação de apli
 
 Durante o treinamento e mostrado como e realizado o deployment de novos pods dentro do node usando o arquivo de deployment.yml, abaixo segue alguns modelos usado em aula para pratica!
 
-Durante uma mudança de pods no node e possive acompanhar utilizando o seguinte comando:
+
+para realizar o rollout de uma versão especifica utilize o seguinte comando:
+
+```
+kubectl rollout undo deployment -n giropops nginx-deployment --to-revision 2
+```
+
+para realizar o scale de pods da sua aplicação utilize o seguinte comando:
+
+```
+Kubectl scale deployment -n namespace --replicas n(9) deployment-name
+```
+
+
+
+Durante uma mudança de pods no node e possivel acompanhar utilizando o seguinte comando:
 ```
 kubectl rollout status deployment -n namespace deployment-name
 ```
@@ -62,14 +77,6 @@ Pod Template:
   Volumes:	<none>
 
 ```
-
-***Documentar***
-
-k rollout undo deployment -n giropops nginx-deployment --to-revision 2
-
-Kubectl scale deployment -n namespace --replicas n(9) deployment-name
-
-
 
 
 > ***Nosso primeiro deployment:***

@@ -2,33 +2,43 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: nginx-deployment
-  name: nginx-deployment
-  namespace: giropops
+    app: nginx-girus
+    opa: sensacional-juvenal
+  name: nginx-girus
 spec:
-  replicas: 10
+  replicas: 5
   selector:
-     matchLabels:
-       app: nginx-deployment
-
+    matchLabels:
+      app: nginx-girus
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailabel: 1
+    type: Recreate
   template:
     metadata:
-      labels:
-        app: nginx-deployment
+       labels:
+         app: nginx-girus
     spec:
       containers:
-      - image: nginx:1.15.0
-        name: nginx-server
+      - image: nginx:1.16.0
+        name: nginx-girus
         resources:
           limits:
-            cpu: "0.5"
-            memory: "256Mi"
-          requests:
             cpu: "0.3"
+            memory: "128Mi"
+          requests:
+            cpu: "0.1"
             memory: "64Mi"
 
+
+
+
+
+      # containers:
+      # - image: nginx:1.16.0
+      #   name: nginx-girus
+      #   resource:
+      #     limits:
+      #       cpu: "0.3"
+      #       memory: "128Mi"
+      #     requests:
+      #       cpu: "0.1"
+      #       memory: "64Mi"
