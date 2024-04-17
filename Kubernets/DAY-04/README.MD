@@ -8,11 +8,15 @@ O principal objetivo de um ReplicaSet é manter um número estável de réplicas
 - Deployment > replicaSet > Pods
 
 > [!IMPORTANT]
->  O replicaset do vai efetuar a mudança no pod se ele morrer, assim que ele voltar as mudanças passadas dentro do replicaset serão efetuadas.
+>  O replicaset so vai efetuar a mudança no pod se ele morrer, assim que ele voltar as mudanças passadas dentro do replicaset serão efetuadas.
 
 ### DeamonSet
-O DaemonSet é uma característica do Kubernetes que permite aos administradores garantir que algumas ou todas as máquinas (nós) no cluster Kubernetes executem uma cópia de um pod. Essencialmente, sempre que um novo nó é adicionado ao cluster, o DaemonSet automaticamente implanta uma cópia do pod escolhido para esse nó, e quando um nó é removido do cluster, o pod que estava rodando no nó é coletado pelo garbage collector.
+O DaemonSet é uma característica do Kubernetes que permite aos administradores garantir que algumas ou todas as máquinas (node) no cluster Kubernetes executem uma cópia de um pod. Essencialmente, sempre que um novo nó é adicionado ao cluster, o DaemonSet automaticamente implanta uma cópia do pod escolhido para esse node, e quando um node é removido do cluster, o pod que estava rodando no node é coletado pelo garbage collector.
 
+- Ele vai garantir que tenha uma replica do meu pod em cada Node
+--------------
+
+## ReplicaSet:
 
 > Segue abaixo o replicaset criado pelo deployment da ultima aula:
 
@@ -120,5 +124,100 @@ Events:
   Normal  SuccessfulCreate  14s   replicaset-controller  Created pod: nginx-replicaset-5dwbj
   Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: nginx-replicaset-zxmd4
   Normal  SuccessfulCreate  13s   replicaset-controller  Created pod: nginx-replicaset-m59nr
+
+```
+
+
+## DeamonSet:
+
+```yml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: nginx-exporter-daemonset
+  name: nginx-exporter-daemonset
+spec:
+  selector:
+    matchLabels:
+      app: nginx-exporter-daemonset
+  template:
+    metadata:
+      labels:
+        app: nginx-exporter-daemonset
+    spec:
+      hostNetwork: true
+      containers:
+      - name: node-exporte
+        image: prom/node-exporter:latest
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+      volumes:
+      - name: proc
+        hostPath:
+          path: /proc
+      - name: sys
+        hostPath:
+          path: /sys
+```
+
+> **Describe:**
+
+```
+root@elliot:/home/elliot/k8s# k describe daemonset
+Name:           node-exporter-daemonset
+Selector:       app=node-exporter-daemonset
+Node-Selector:  <none>
+Labels:         app=node-exporter-daemonset
+Annotations:    deprecated.daemonset.template.generation: 1
+Desired Number of Nodes Scheduled: 2
+Current Number of Nodes Scheduled: 2
+Number of Nodes Scheduled with Up-to-date Pods: 2
+Number of Nodes Scheduled with Available Pods: 2
+Number of Nodes Misscheduled: 0
+Pods Status:  2 Running / 0 Waiting / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  app=node-exporter-daemonset
+  Containers:
+   node-exporte:
+    Image:        prom/node-exporter:latest
+    Port:         9100/TCP
+    Host Port:    9100/TCP
+    Environment:  <none>
+    Mounts:
+      /host/proc from proc (ro)
+      /host/sys from sys (ro)
+  Volumes:
+   proc:
+    Type:          HostPath (bare host directory volume)
+    Path:          /proc
+    HostPathType:  
+   sys:
+    Type:          HostPath (bare host directory volume)
+    Path:          /sys
+    HostPathType:  
+Events:
+  Type    Reason            Age   From                  Message
+  ----    ------            ----  ----                  -------
+  Normal  SuccessfulCreate  20s   daemonset-controller  Created pod: node-exporter-daemonset-p89m8
+  Normal  SuccessfulCreate  20s   daemonset-controller  Created pod: node-exporter-daemonset-99zbg
+
+```
+
+> Demonstrativo dos pods em cada node
+
+```
+root@elliot:/home/elliot# k get pods -o wide
+NAME                            READY   STATUS    RESTARTS   AGE   IP           NODE               NOMINATED NODE   READINESS GATES
+node-exporter-daemonset-99zbg   1/1     Running   0          25m   172.18.0.3   giropops-worker2   <none>           <none>
+node-exporter-daemonset-p89m8   1/1     Running   0          25m   172.18.0.2   giropops-worker    <none>           <none>
 
 ```

@@ -1,44 +1,37 @@
-apiVersion: apps/v1
-kind: Deployment
+ApiVersion: apps/v1
+kind: DaemonSet
 metadata:
   labels:
-    app: nginx-girus
-    opa: sensacional-juvenal
-  name: nginx-girus
+    app: nginx-exporter-daemonset
+  name: nginx-exporter-daemonset
 spec:
-  replicas: 5
   selector:
     matchLabels:
-      app: nginx-girus
-  strategy:
-    type: Recreate
+      app: nginx-exporter-daemonset
   template:
     metadata:
-       labels:
-         app: nginx-girus
+      labels:
+        app: nginx-exporter-deamonset
     spec:
+      hostNetwork: true
       containers:
-      - image: nginx:1.16.0
-        name: nginx-girus
-        resources:
-          limits:
-            cpu: "0.3"
-            memory: "128Mi"
-          requests:
-            cpu: "0.1"
-            memory: "64Mi"
+      - name: node-exporte
+        image: prom/node-exporter:latest
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+        volumeMounts:
+        - name: proc
+          mountPath: /host/proc
+          readOnlu: true
+        - name: sys
+          mountPath: /host/sys
+          readOnly: true
+    volumes:
+    - name: proc
+      hostPath:
+        path: /proc
+    - name: sys
+      hostPath:
+        path: /sys
 
-
-
-
-
-      # containers:
-      # - image: nginx:1.16.0
-      #   name: nginx-girus
-      #   resource:
-      #     limits:
-      #       cpu: "0.3"
-      #       memory: "128Mi"
-      #     requests:
-      #       cpu: "0.1"
-      #       memory: "64Mi"
