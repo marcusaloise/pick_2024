@@ -14,6 +14,69 @@ O principal objetivo de um ReplicaSet é manter um número estável de réplicas
 O DaemonSet é uma característica do Kubernetes que permite aos administradores garantir que algumas ou todas as máquinas (node) no cluster Kubernetes executem uma cópia de um pod. Essencialmente, sempre que um novo nó é adicionado ao cluster, o DaemonSet automaticamente implanta uma cópia do pod escolhido para esse node, e quando um node é removido do cluster, o pod que estava rodando no node é coletado pelo garbage collector.
 
 - Ele vai garantir que tenha uma replica do meu pod em cada Node
+
+### Probes
+
+As probes são uma forma de você monitorar o seu Pod e saber se ele está em um estado saudável ou não. Com elas é possível assegurar que seus Pods estão rodando e respondendo de maneira correta (Basicamente um healthcheck dos pods)
+
+- liveness
+
+  - O liveness verifica se a aplicação dentro do contêiner está funcionando corretamente. Caso a aplicação falhe ou pare de responder, o livenessProbe pode automaticamente reiniciar o contêiner para tentar restaurar a operação normal.
+
+- readinessProbe
+
+ - O readiness verifica se o seu container está pronto para receber tráfego, se ele está pronto para receber requisições vindas de fora caso da erro o bacana fica indisponivel até a requisição funcionar
+
+- startupProbe
+
+
+
+
+> Config das probes
+```yml
+      containers:  
+      - image: nginx:1.19.1
+        name: nginx-s
+        resources: 
+          limits:
+            cpu: "0.9"
+            memory: "256Mi"
+          requests:
+            cpu: "0.4"
+            memory: "64Mi"      
+        livenessProbe:
+          tcpSocket:
+            port: 80   
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:80    
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        startupProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+```
+> Describe do Pod/deployment sobre o liveness
+```
+    Liveness:     tcp-socket :80 delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:    exec [curl -f http://localhost:80] delay=10s timeout=5s period=10s #success=1 #failure=3
+    Startup:      tcp-socket :80 delay=10s timeout=5s period=10s #success=1 #failure=3
+
+```
+
 --------------
 
 ## ReplicaSet:
@@ -220,4 +283,48 @@ NAME                            READY   STATUS    RESTARTS   AGE   IP           
 node-exporter-daemonset-99zbg   1/1     Running   0          25m   172.18.0.3   giropops-worker2   <none>           <none>
 node-exporter-daemonset-p89m8   1/1     Running   0          25m   172.18.0.2   giropops-worker    <none>           <none>
 
+```
+
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-deployment
+    fruta: banana-da-terra
+  name: nginx-deployment
+  namespace: giropops
+spec:
+  replicas: 5
+  selector:
+     matchLabels:
+       app: nginx-deployment  
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1      
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment  
+    spec:
+      containers:  
+      - image: nginx:1.13.0
+        name: nginx-s
+        resources: 
+          limits:
+            cpu: "0.9"
+            memory: "256Mi"
+          requests:
+            cpu: "0.4"
+            memory: "64Mi"      
+        livenessProbe:
+          tcpSocket:
+            port: 80   
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
 ```
