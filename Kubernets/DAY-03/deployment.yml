@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-deployment
+  name: nginx-deployment
+  namespace: giropops
+spec:
+  replicas: 10
+  selector:
+     matchLabels:
+       app: nginx-deployment  
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1      
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment  
+    spec:
+      containers:  
+      - image: nginx:1.15.0
+        name: nginx-server
+        resources: 
+          limits:
+            cpu: "0.5"
+            memory: "256Mi"
+          requests:
+            cpu: "0.3"
+            memory: "64Mi"      

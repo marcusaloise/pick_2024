@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx-deployment
+    fruta: banana-da-terra
+  name: nginx-deployment
+  namespace: giropops
+spec:
+  replicas: 5
+  selector:
+     matchLabels:
+       app: nginx-deployment  
+
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1      
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment  
+    spec:
+      containers:  
+      - image: nginx:1.13.0
+        name: nginx-s
+        resources: 
+          limits:
+            cpu: "0.9"
+            memory: "256Mi"
+          requests:
+            cpu: "0.4"
+            memory: "64Mi"      
+        livenessProbe:
+          tcpSocket:
+            port: 80   
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: girus
+    service: webserver
+  name: girus
+spec:
+  containers:
+  - image: nginx
+    name: nginx-server
+    volumeMounts:
+    - mountPath: /giropops
+      name: primeiro-empydir
+    resources: 
+      limits:
+        cpu: "0.5"
+        memory: "120Mi"
+      requests:
+        cpu: "0.3"
+        memory: "64Mi"       
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  volumes:
+  - name: primeiro-empydir
+    emptyDir:
+      sizeLimit: 256Mi  
