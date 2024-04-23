@@ -211,6 +211,79 @@ Source:
     Path:      /mnt/nfs
     ReadOnly:  false
 Events:        <none>
+
+
+
+ubuntu@k8s-1:~/pick$ cat pv-nfs.yaml 
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    storage: nfs
+  name: marcus-pv-nfs
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 172.31.49.148
+    path: "/mnt/nfs"
+  storageClassName: giropops 
+
+
+
+ubuntu@k8s-1:~/pick$ cat storageclass.yaml 
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: giropops
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+
+ubuntu@k8s-1:~/pick$ cat persistentVolume.yaml 
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    storage: lento
+  name: marcus-py
+spec:
+  capacity:
+    storage: 1Gi    
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath: 
+    path: /mnt/data
+  storageClassName: giropops
+
+
+
+ubuntu@k8s-1:~/pick$ cat pvc.yaml 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: 
+  labels: 
+    pvc: marcus-pvc
+  name: marcus-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests: 
+      storage: 1Gi
+  storageClassName: giropops
+  selector:  
+    matchLabels:
+      storage: nfs
+
+
+
+
 ubuntu@k8s-1:~/pick$ cat pv-nfs.yaml 
 apiVersion: v1
 kind: PersistentVolume
