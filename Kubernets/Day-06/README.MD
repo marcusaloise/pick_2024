@@ -136,15 +136,6 @@ O ***PV*** é utilizado para fornecer armazenamento durável, ou seja, os dados 
 No Kubernetes, você pode usar várias soluções de armazenamento como Persistent Volumes (PVs). Essas soluções podem ser divididas em dois tipos: armazenamento local e armazenamento em rede
 
 
-
-
-
-
-
-
-
-
-
 ---------------------------------------------
 
 ### Vamos usar o nfs volume
@@ -152,45 +143,32 @@ No Kubernetes, você pode usar várias soluções de armazenamento como Persiste
 
 Vamos criar um dir no /mnt/nfs e alterar o owner para o nosso user usando o seguinte comando:
 
-
+```
 chown user.user /mnt/nfs
+```
 
 vamos instalar os seguintes pacotes nfs-kernel-server nfs-common
 
+```
+sudo apt-get install nfs-kernel-server nfs-common
+```
 
-
-
-
-vamos editar o arquivo de exports dentro de /etc/exports
-
-vamos add as seguintes conf dentro dele
+Vamos editar o arquivo de exports dentro de /etc/exports e add as seguintes conf dentro dele
 
 ```
 /mnt/nfs	*(rw,sync,no_root,squash,no_subtree_check)
 ```
-
-
-
+```
 sudo exportfs -ar
+```
 
-
-showmount -e
-
-
-
-
-
-
-
-
-
-
-
-
+```
 ubuntu@k8s-1:~/pick$ k get pv
 NAME            CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   VOLUMEATTRIBUTESCLASS   REASON   AGE
 marcus-pv-nfs   1Gi        RWO            Retain           Available           giropops       <unset>                          3s
 marcus-py       1Gi        RWO            Retain           Available           giropops       <unset>                          93m
+
+
 ubuntu@k8s-1:~/pick$ k describe pv marcus-pv-nfs
 Name:            marcus-pv-nfs
 Labels:          storage=nfs
@@ -211,9 +189,9 @@ Source:
     Path:      /mnt/nfs
     ReadOnly:  false
 Events:        <none>
+```
 
-
-
+```
 ubuntu@k8s-1:~/pick$ cat pv-nfs.yaml 
 apiVersion: v1
 kind: PersistentVolume
@@ -231,9 +209,9 @@ spec:
     server: 172.31.49.148
     path: "/mnt/nfs"
   storageClassName: giropops 
+```
 
-
-
+```
 ubuntu@k8s-1:~/pick$ cat storageclass.yaml 
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -242,9 +220,10 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
+```
 
+```
 ubuntu@k8s-1:~/pick$ cat persistentVolume.yaml 
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -260,9 +239,9 @@ spec:
   hostPath: 
     path: /mnt/data
   storageClassName: giropops
+```
 
-
-
+```
 ubuntu@k8s-1:~/pick$ cat pvc.yaml 
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -280,10 +259,9 @@ spec:
   selector:  
     matchLabels:
       storage: nfs
+```
 
-
-
-
+```
 ubuntu@k8s-1:~/pick$ cat pv-nfs.yaml 
 apiVersion: v1
 kind: PersistentVolume
@@ -301,3 +279,4 @@ spec:
     server: 172.31.49.148
     path: "/mnt/nfs"
   storageClassName: giropops 
+```
