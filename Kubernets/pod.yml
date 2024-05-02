@@ -1,37 +1,32 @@
-ApiVersion: apps/v1
-kind: DaemonSet
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
-  labels:
-    app: nginx-exporter-daemonset
-  name: nginx-exporter-daemonset
+  name: nginx
 spec:
+  serviceName: "nginx"
+  replicas: 3
   selector:
-    matchLabels:
-      app: nginx-exporter-daemonset
+    matchlabels:
+       app: nginx
   template:
     metadata:
-      labels:
-        app: nginx-exporter-deamonset
+       labels:
+          app: nginx
     spec:
-      hostNetwork: true
       containers:
-      - name: node-exporte
-        image: prom/node-exporter:latest
-        ports:
-        - containerPort: 9100
-          hostPort: 9100
-        volumeMounts:
-        - name: proc
-          mountPath: /host/proc
-          readOnlu: true
-        - name: sys
-          mountPath: /host/sys
-          readOnly: true
-    volumes:
-    - name: proc
-      hostPath:
-        path: /proc
-    - name: sys
-      hostPath:
-        path: /sys
-
+      - name: nginx
+        image: nginx:1.22.1
+        ports: 
+        - containerPort: 80
+          name: http
+        volumeMount:
+        - name: nginx-pv
+          mountPath: /usr/share/nginx/html  
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-pv
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi   
