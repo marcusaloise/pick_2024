@@ -15,3 +15,5 @@ Os StatefulSets são úteis para aplicações que necessitam de um ou mais dos s
  - Ordem de deployment e scaling garantida.
  - Ordem de rolling updates e rollbacks garantida.
  - Algumas aplicações que se encaixam nesses requisitos são bancos de dados, sistemas de filas e quaisquer aplicativos que necessitam de persistência de dados ou identidade de rede estável.
+
+teste
