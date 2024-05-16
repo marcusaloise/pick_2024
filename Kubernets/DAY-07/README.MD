@@ -63,7 +63,9 @@ nginx-2   1/1     Running   1 (30m ago)   4d23h
 ```
 
 
+### CLuster DNS
 
+nomeDoservice.namespace.svc.cluster.local
 
 
 ##  Vamos criar o Headless Service para que possamos acessar os Pods individualmente.
