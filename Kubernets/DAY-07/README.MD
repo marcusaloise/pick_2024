@@ -131,3 +131,238 @@ Para você ver os EndPoints criados, você pode utilizar o comando:
 kubectl get endpoints 
 ```
 
+
+```
+root@elliot:/home/elliot/k8s# cat statefull-nginx.yaml 
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  serviceName: "nginx"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+       labels:
+          app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.22.1
+        ports: 
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nginx-pv
+          mountPath: /usr/share/nginx/html  
+  volumeClaimTemplates:
+  - metadata:
+      name: nginx-pv
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi   
+```
+
+```
+root@elliot:/home/elliot/k8s# cat nginx-clusterip-svc.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+    env: dev
+spec:
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    name: http
+    targetPort: 80
+  type: ClusterIP
+
+```
+
+```
+root@elliot:/home/elliot/k8s# cat nginx-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        env: dev
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: http 
+```
+```
+root@elliot:/home/elliot/k8s# cat nginx-deployment.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector: 
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        env: dev
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+          name: http 
+
+```
+```
+root@elliot:/home/elliot/k8s# cat nginx-headless-svc.yaml
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: http
+  clusterIP: None
+  selector: 
+    app: nginx
+```
+
+```
+root@elliot:/home/elliot/k8s# cat nginx-headless-svc.yaml
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: http
+  clusterIP: None
+  selector: 
+    app: nginx
+
+```
+```
+root@elliot:/home/elliot/k8s# cat nginx-loadbalancer-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-loadbalancer
+  labels:
+    app: nginx
+    env: dev
+spec:
+  selector: 
+    app: nginx
+  ports:
+  - port: 80
+    name: http
+    targetPort: 80
+  type: LoadBalancer
+```
+
+```
+root@elliot:/home/elliot/k8s# cat nginx-nodeport-svc.yaml
+apiVersion: v1
+kind: Service
+metadata: 
+  name: nginx-nodeport
+  labels:
+    app: nginx
+    env: dev
+spec: 
+  selector:
+    app: nginx
+  ports:
+  - port: 80
+    name: http
+    targetPort: 80
+    nodePort: 32000
+  type: NodePort
+
+```
+
+
+---------------
+
+
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: giropops-set
+spec:
+  serviceName: "giropops-set"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: giropops-set
+  template:
+    metadata:
+       labels:
+          app: giropops-set
+    spec:
+      containers:
+      - name: giropops-set
+        image: nginx:1.19.0
+        ports: 
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: giropops-pv
+          mountPath: /usr/share/nginx/html  
+  volumeClaimTemplates:
+  - metadata:
+      name: giropops-pv
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi   
+
+
+
+
+
+apiVersion: v1
+kind: Service
+metadata: 
+  name: giropops-service
+  labels:
+    app: giropops-service
+spec:
+  ports:
+  - port: 80
+    name: http
+  clusterIP: None
+  selector: 
+    app: giropops-set
