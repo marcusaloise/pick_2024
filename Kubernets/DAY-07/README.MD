@@ -132,8 +132,8 @@ kubectl get endpoints
 ```
 
 
+> StatefulSet file
 ```
-root@elliot:/home/elliot/k8s# cat statefull-nginx.yaml 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -168,8 +168,8 @@ spec:
           storage: 1Gi   
 ```
 
+> Service ClusterIP
 ```
-root@elliot:/home/elliot/k8s# cat nginx-clusterip-svc.yaml 
 apiVersion: v1
 kind: Service
 metadata:
@@ -188,8 +188,8 @@ spec:
 
 ```
 
+> Deployment file para o nginx (Apenas teste)
 ```
-root@elliot:/home/elliot/k8s# cat nginx-deployment.yaml 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -212,33 +212,9 @@ spec:
         - containerPort: 80
           name: http 
 ```
-```
-root@elliot:/home/elliot/k8s# cat nginx-deployment.yaml 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-spec:
-  replicas: 3
-  selector: 
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-        env: dev
-    spec:
-      containers:
-      - name: nginx
-        image: nginx
-        ports:
-        - containerPort: 80
-          name: http 
 
+> Service headless file
 ```
-```
-root@elliot:/home/elliot/k8s# cat nginx-headless-svc.yaml
 apiVersion: v1
 kind: Service
 metadata: 
@@ -254,25 +230,8 @@ spec:
     app: nginx
 ```
 
+> Loadbalancer service file
 ```
-root@elliot:/home/elliot/k8s# cat nginx-headless-svc.yaml
-apiVersion: v1
-kind: Service
-metadata: 
-  name: nginx
-  labels:
-    app: nginx
-spec:
-  ports:
-  - port: 80
-    name: http
-  clusterIP: None
-  selector: 
-    app: nginx
-
-```
-```
-root@elliot:/home/elliot/k8s# cat nginx-loadbalancer-svc.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -290,8 +249,8 @@ spec:
   type: LoadBalancer
 ```
 
+> NodePort service file
 ```
-root@elliot:/home/elliot/k8s# cat nginx-nodeport-svc.yaml
 apiVersion: v1
 kind: Service
 metadata: 
@@ -314,8 +273,11 @@ spec:
 
 ---------------
 
+### Desafio dia 07 
 
+#### Parte 1
 
+```
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -348,11 +310,13 @@ spec:
       resources:
         requests:
           storage: 1Gi   
+```
 
+#### Parte 2
 
+E o deploy do giropops senhas
 
-
-
+```
 apiVersion: v1
 kind: Service
 metadata: 
@@ -366,3 +330,89 @@ spec:
   clusterIP: None
   selector: 
     app: giropops-set
+```
+
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: giropops-senhas
+  name: giropops-senhas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: giropops-senhas
+  template:
+    metadata:
+      labels:
+        app: giropops-senhas
+    spec:
+      containers:
+      - image: linuxtips/giropops-senhas:1.0
+        name: giropops-senhas
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Always
+```
+
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: giropops-senhas
+  labels:
+    app: giropops-senhas
+spec:
+  selector:
+    app: giropops-senhas
+  ports:
+    - protocol: TCP
+      port: 5000
+      nodePort: 32500
+      targetPort: 5000
+      name: tcp-app
+  type: NodePort
+```
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - image: redis
+        name: redis
+        ports:
+          - containerPort: 6379
+```
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+  type: ClusterIP
+```
